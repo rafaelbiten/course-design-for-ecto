@@ -8,6 +8,7 @@ defmodule Tome.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      {Tome.Repo, []}
       # Starts a worker by calling: Tome.Worker.start_link(arg)
       # {Tome.Worker, arg}
     ]
