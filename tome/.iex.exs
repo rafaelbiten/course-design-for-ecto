@@ -1,0 +1,1 @@
+alias Tome.Library.Book
