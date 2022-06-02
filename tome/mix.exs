@@ -11,7 +11,7 @@ defmodule Tome.MixProject do
       aliases: aliases(),
       preferred_cli_env: [
         check: :test,
-        check_all: :test,
+        check_all: :test
       ]
     ]
   end

@@ -2,6 +2,10 @@ defmodule Tome.Library.Book do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @moduledoc """
+  Module with the Book schema and related changesets
+  """
+
   schema "books" do
     field(:title, :string)
     field(:isbn, :string)
