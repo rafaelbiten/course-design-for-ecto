@@ -3,11 +3,11 @@ defmodule Tome.Repo.Migrations.CreateBooks do
 
   def change do
     create table(:books) do
-      add :title, :string
-      add :isbn, :string
-      add :description, :text
-      add :status, :string, default: "published"
-      add :published_on, :date
+      add(:title, :string)
+      add(:isbn, :string)
+      add(:description, :text)
+      add(:status, :string, default: "published")
+      add(:published_on, :date)
 
       timestamps()
     end
