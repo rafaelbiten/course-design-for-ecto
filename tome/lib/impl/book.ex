@@ -22,4 +22,10 @@ defmodule Tome.Library.Book do
     |> validate_required(~w[title isbn status]a)
     |> validate_inclusion(:status, ~w[working published beta retired])
   end
+
+  def update_changeset(book, params \\ %{}) do
+    book
+    |> cast(params, ~w[title description status published_on]a)
+    |> validate_inclusion(:status, ~w[published beta retired])
+  end
 end
