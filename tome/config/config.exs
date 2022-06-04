@@ -1,9 +1,6 @@
 import Config
 
-config :tome, Tome.Repo,
-  database: "tome_repo",
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost"
-
+config :logger, level: :info
 config :tome, ecto_repos: [Tome.Repo]
+
+import_config "#{Mix.env()}.exs"
