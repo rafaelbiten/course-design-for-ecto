@@ -11,7 +11,8 @@ defmodule Tome.MixProject do
       aliases: aliases(),
       preferred_cli_env: [
         check: :test,
-        check_all: :test
+        check_all: :test,
+        test_setup: :test,
       ]
     ]
   end
@@ -39,7 +40,9 @@ defmodule Tome.MixProject do
     [
       get: ["deps.get", "deps.compile"],
       check: ["dialyzer  --format dialyxir", "credo --strict"],
-      check_all: ["dialyzer  --format short", "credo --strict", "test"]
+      check_all: ["dialyzer  --format short", "credo --strict", "test"],
+      test_setup: ["ecto.create --quiet", "ecto.migrate --quiet", "run priv/repo/seeds/books.exs"],
+      test: ["test_setup", "test"]
     ]
   end
 end
