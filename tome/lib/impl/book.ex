@@ -34,7 +34,20 @@ defmodule Tome.Library.Book do
 
   #  Implementation
 
-  defp validate_published_on(changeset), do: require_published_on(changeset, book_status: get_field(changeset, :status))
-  defp require_published_on(changeset, book_status: "published"), do: validate_required(changeset, [:published_on])
-  defp require_published_on(changeset, book_status: _), do: changeset
+  defp validate_published_on(changeset) do
+    case get_field(changeset, :status) do
+      "published" -> validate_required(changeset, [:published_on])
+      _ -> changeset
+    end
+  end
+
+  # |> validate_required_when(%{key: :status, value: "published"}, require_field: :published_on)
+  # defp validate_required_when(changeset, %{key: key, value: value}, require_field: require_field) do
+  #   field_value = get_field(changeset, key)
+
+  #   case field_value == value do
+  #     true -> validate_required(changeset, require_field)
+  #     _ -> changeset
+  #   end
+  # end
 end
