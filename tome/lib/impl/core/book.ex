@@ -1,4 +1,4 @@
-defmodule Tome.Library.Book do
+defmodule Tome.Core.Book do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -35,8 +35,8 @@ defmodule Tome.Library.Book do
   #  Implementation
 
   defp validate_published_on(changeset) do
-    case get_field(changeset, :status) do
-      "published" -> validate_required(changeset, [:published_on])
+    case get_field(changeset, :status) in ["published", "beta"] do
+      true -> validate_required(changeset, [:published_on])
       _ -> changeset
     end
   end
