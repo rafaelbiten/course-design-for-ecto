@@ -1,5 +1,7 @@
 import Ecto.Query
 import Ecto.Changeset
 
+import Tome.Core.BookQuery
+
 alias Tome.Repo
-alias Tome.Library.Book
+alias Tome.Core.{Book, BookQuery}
