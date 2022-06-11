@@ -6,6 +6,8 @@ defmodule Tome.Core.Book do
   Module with the Book schema and related changesets
   """
 
+  # SCHEMA
+
   schema "books" do
     field(:title, :string)
     field(:isbn, :string)
@@ -15,6 +17,8 @@ defmodule Tome.Core.Book do
 
     timestamps()
   end
+
+  # CHANGESET
 
   def create_changeset(params \\ %{}) do
     %__MODULE__{}
@@ -50,4 +54,13 @@ defmodule Tome.Core.Book do
   #     _ -> changeset
   #   end
   # end
+
+  # CONVERT
+
+  def to_json(%__MODULE__{} = book) do
+    book
+    |> Map.from_struct()
+    |> Map.drop([:__meta__, :id])
+    |> Poison.encode!()
+  end
 end
