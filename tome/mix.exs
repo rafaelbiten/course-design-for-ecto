@@ -12,7 +12,7 @@ defmodule Tome.MixProject do
       preferred_cli_env: [
         check: :test,
         check_all: :test,
-        test_setup: :test,
+        test_setup: :test
       ]
     ]
   end
@@ -31,6 +31,7 @@ defmodule Tome.MixProject do
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.8"},
+      {:poison, "~> 5.0"},
       {:postgrex, "~> 0.16.3"}
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]
