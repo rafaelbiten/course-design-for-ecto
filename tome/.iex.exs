@@ -5,3 +5,5 @@ import Tome.Core.BookQuery
 
 alias Tome.Repo
 alias Tome.Core.{Book, BookQuery}
+
+alias Tome.Boundary.Books
