@@ -39,6 +39,12 @@ defmodule Tome.Core.BookQuery do
     from(b in query, where: ilike(b.description, ^search_query))
   end
 
+  # NOTE: Valid statuses duplicated from Tome.Core.Book
+  #       Not sure how to share it in a way that it can be used in guards
+  def by_status(query, status) when status in ~w[working published beta retired] do
+    from(b in query, where: b.status == ^status)
+  end
+
   def order_by(query, property) when property in ~w[title description status isbn published_on]a do
     from(b in query, order_by: [asc: ^property])
   end

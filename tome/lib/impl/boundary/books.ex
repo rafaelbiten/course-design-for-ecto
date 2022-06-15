@@ -34,7 +34,13 @@ defmodule Tome.Boundary.Books do
     |> Repo.all()
   end
 
-  def order_by(property) when property in ~w[title description status isbn published_on]a do
+  def by_status(status) do
+    new()
+    |> by_status(status)
+    |> Repo.all()
+  end
+
+  def order_by(property) do
     new()
     |> order_by(property)
     |> Repo.all()
