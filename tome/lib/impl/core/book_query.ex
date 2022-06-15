@@ -29,6 +29,25 @@ defmodule Tome.Core.BookQuery do
 
   def recently_published(query), do: query |> recent |> published
 
+  def by_title(query, partial_title) do
+    search_query = "%#{partial_title}%"
+    from(b in query, where: ilike(b.title, ^search_query))
+  end
+
+  def by_description(query, partial_description) do
+    search_query = "%#{partial_description}%"
+    from(b in query, where: ilike(b.description, ^search_query))
+  end
+
+  def order_by(query, property) when property in ~w[title description status isbn published_on]a do
+    from(b in query, order_by: [asc: ^property])
+  end
+
+  def for_page(query, page, page_size \\ 10) do
+    offset = page * page_size
+    from(b in query, limit: ^page_size, offset: ^offset)
+  end
+
   # CONVERT
 
   def as_tuple_title(query),
