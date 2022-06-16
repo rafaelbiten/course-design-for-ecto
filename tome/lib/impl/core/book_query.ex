@@ -41,8 +41,12 @@ defmodule Tome.Core.BookQuery do
     from(b in query, where: ilike(b.description, ^search_query))
   end
 
+  def by_status(query, statuses) when is_list(statuses) do
+    Enum.reduce(statuses, query, fn status, query -> by_status(query, status) end)
+  end
+
   def by_status(query, status) when status in @valid_statuses do
-    from(b in query, where: b.status == ^status)
+    from(b in query, or_where: b.status == ^status)
   end
 
   def order_by(query, property) when property in ~w[title description status isbn published_on]a do
