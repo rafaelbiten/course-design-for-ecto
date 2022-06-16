@@ -6,13 +6,15 @@ defmodule Tome.Core.Book do
   Module with the Book schema and related changesets
   """
 
+  def list_valid_statuses, do: Ecto.Enum.values(__MODULE__, :status)
+
   # SCHEMA
 
   schema "books" do
     field(:title, :string)
     field(:isbn, :string)
     field(:description)
-    field(:status, :string, default: "working")
+    field(:status, Ecto.Enum, values: ~w[working published beta retired]a, default: :working)
     field(:published_on, :date, default: nil)
 
     timestamps()
@@ -24,7 +26,6 @@ defmodule Tome.Core.Book do
     %__MODULE__{}
     |> cast(params, ~w[title isbn description status published_on]a)
     |> validate_required(~w[title isbn status]a)
-    |> validate_inclusion(:status, ~w[working published beta retired])
     |> unique_constraint(:isbn)
   end
 
@@ -32,14 +33,14 @@ defmodule Tome.Core.Book do
     book
     |> cast(params, ~w[title description status published_on]a)
     |> validate_required(~w[title isbn status]a)
-    |> validate_inclusion(:status, ~w[published beta retired])
+    |> validate_inclusion(:status, ~w[published beta retired]a)
     |> validate_published_on()
   end
 
   #  Implementation
 
   defp validate_published_on(changeset) do
-    case get_field(changeset, :status) in ["published", "beta"] do
+    case get_field(changeset, :status) in [:published, :beta] do
       true -> validate_required(changeset, [:published_on])
       _ -> changeset
     end

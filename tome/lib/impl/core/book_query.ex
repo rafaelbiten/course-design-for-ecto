@@ -2,6 +2,8 @@ defmodule Tome.Core.BookQuery do
   import Ecto.Query, only: [from: 2]
   alias Tome.Core.Book
 
+  @valid_statuses Book.list_valid_statuses()
+
   @moduledoc """
   Module to build Book related queries.
   This is a `core` module, so it only builds queries.
@@ -20,9 +22,9 @@ defmodule Tome.Core.BookQuery do
 
   # REDUCE
 
-  def beta(query), do: from(b in query, where: b.status == "beta")
+  def beta(query), do: from(b in query, where: b.status == :beta)
 
-  def published(query), do: from(b in query, where: b.status == "published")
+  def published(query), do: from(b in query, where: b.status == :published)
 
   def recent(query, after_date \\ Date.add(Date.utc_today(), -7)),
     do: from(b in query, where: b.published_on >= ^after_date)
@@ -39,9 +41,7 @@ defmodule Tome.Core.BookQuery do
     from(b in query, where: ilike(b.description, ^search_query))
   end
 
-  # NOTE: Valid statuses duplicated from Tome.Core.Book
-  #       Not sure how to share it in a way that it can be used in guards
-  def by_status(query, status) when status in ~w[working published beta retired] do
+  def by_status(query, status) when status in @valid_statuses do
     from(b in query, where: b.status == ^status)
   end
 

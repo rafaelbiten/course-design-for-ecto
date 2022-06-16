@@ -8,9 +8,9 @@ now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 # Insert some real books
 
 real_books = [
-  {"Designing Elixir Systems with OTP", "9781680506617", "Learn some OTP", "published", ~D[2019-12-01]},
-  {"Progamming Ecto", "9781680502824", "Learn some Ecto", "published", ~D[2019-04-01]},
-  {"Progamming Phoenix LiveView", "9781680508215", "Learn some LiveView", "beta", nil}
+  {"Designing Elixir Systems with OTP", "9781680506617", "Learn some OTP", :published, ~D[2019-12-01]},
+  {"Progamming Ecto", "9781680502824", "Learn some Ecto", :published, ~D[2019-04-01]},
+  {"Progamming Phoenix LiveView", "9781680508215", "Learn some LiveView", :beta, nil}
 ]
 
 Tome.Repo.insert_all(
@@ -30,13 +30,13 @@ Tome.Repo.insert_all(
 
 # Insert some fake books
 
-statuses = ~w[working published beta retired]
+statuses = ~w[working published beta retired]a
 
 Tome.Repo.insert_all(
   Tome.Core.Book,
   Enum.map(1..30, fn n ->
     status = Enum.random(statuses)
-    published_on = if status in ~w[published retired], do: Date.add(Date.utc_today(), -n), else: nil
+    published_on = if status in ~w[published retired]a, do: Date.add(Date.utc_today(), -n), else: nil
     isbn = "1234567891234" |> String.split("", trim: true) |> Enum.shuffle() |> Enum.join()
 
     %{
