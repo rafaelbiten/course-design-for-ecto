@@ -1,7 +1,7 @@
 # Usage
 # mix run priv/repo/seeds/books.exs
 
-Tome.Repo.delete_all(Tome.Core.Book)
+Tome.Repo.delete_all(Tome.Library.Book)
 
 now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 
@@ -14,7 +14,7 @@ real_books = [
 ]
 
 Tome.Repo.insert_all(
-  Tome.Core.Book,
+  Tome.Library.Book,
   Enum.map(real_books, fn {title, isbn, description, status, published_on} ->
     %{
       title: title,
@@ -33,7 +33,7 @@ Tome.Repo.insert_all(
 statuses = ~w[working published beta retired]a
 
 Tome.Repo.insert_all(
-  Tome.Core.Book,
+  Tome.Library.Book,
   Enum.map(1..30, fn n ->
     status = Enum.random(statuses)
     published_on = if status in ~w[published retired]a, do: Date.add(Date.utc_today(), -n), else: nil

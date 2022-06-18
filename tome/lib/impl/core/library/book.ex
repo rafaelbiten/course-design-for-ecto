@@ -1,4 +1,4 @@
-defmodule Tome.Core.Book do
+defmodule Tome.Library.Book do
   use Ecto.Schema
   import Ecto.Changeset
 

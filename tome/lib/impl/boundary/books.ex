@@ -1,6 +1,6 @@
 defmodule Tome.Boundary.Books do
   alias Tome.Repo
-  import Tome.Core.BookQuery
+  import Tome.Library.BookQuery
 
   @moduledoc """
   Boundary / Interaction layer to bridge:

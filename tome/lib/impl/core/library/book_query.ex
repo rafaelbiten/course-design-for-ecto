@@ -1,6 +1,6 @@
-defmodule Tome.Core.BookQuery do
+defmodule Tome.Library.BookQuery do
   import Ecto.Query, only: [from: 2]
-  alias Tome.Core.Book
+  alias Tome.Library.Book
 
   @valid_statuses Book.list_valid_statuses()
 
