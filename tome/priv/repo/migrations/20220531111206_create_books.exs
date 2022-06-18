@@ -11,9 +11,9 @@ defmodule Tome.Repo.Migrations.CreateBooks do
 
       timestamps()
     end
-  end
 
-  unique_index("books", [:isbn])
+    create(unique_index(:books, [:isbn]))
+  end
 end
 
 # mix ecto.create
