@@ -1,5 +1,6 @@
 defmodule Tome.Library.BookQuery do
   import Ecto.Query, only: [from: 2]
+  alias Tome.Feedback.Review
   alias Tome.Library.Book
 
   @valid_statuses Book.list_valid_statuses()
@@ -8,6 +9,14 @@ defmodule Tome.Library.BookQuery do
   Module to build Book related queries.
   This is a `core` module, so it only builds queries.
   The boundary layer is resposible for running them.
+
+  Examples:
+
+  Book
+    |> BookQuery.published
+    |> BookQuery.with_reviews
+    |> BookQuery.highly_rated
+    |> Repo.all
   """
 
   # Book implements the Ecto.Queryable protocol (i Book) so
@@ -56,6 +65,27 @@ defmodule Tome.Library.BookQuery do
   def for_page(query, page, page_size \\ 10) do
     offset = page * page_size
     from(b in query, limit: ^page_size, offset: ^offset)
+  end
+
+  def with_reviews(query) do
+    from(b in query,
+      join: r in Review,
+      on: b.id == r.book_id,
+      as: :reviews
+    )
+  end
+
+  def highly_rated(query, stars \\ 4) when stars in 1..5 do
+    from(b in query, where: as(:reviews).stars >= ^stars)
+  end
+
+  def poorly_rated(query, stars \\ 2) when stars in 1..5 do
+    from(b in query, where: as(:reviews).stars <= ^stars)
+  end
+
+  def recently_rated(query, hours_ago \\ 1) do
+    hours_ago = DateTime.add(DateTime.utc_now(), -:timer.hours(hours_ago))
+    from(b in query, where: as(:reviews).inserted_at >= ^hours_ago)
   end
 
   # CONVERT
