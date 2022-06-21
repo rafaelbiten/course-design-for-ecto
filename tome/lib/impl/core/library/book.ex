@@ -18,6 +18,7 @@ defmodule Tome.Library.Book do
     field(:published_on, :date, default: nil)
 
     timestamps()
+    has_many(:reviews, Tome.Feedback.Review)
   end
 
   # CHANGESET
