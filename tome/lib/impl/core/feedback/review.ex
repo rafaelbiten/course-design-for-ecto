@@ -12,6 +12,24 @@ defmodule Tome.Feedback.Review do
         |> Review.changeset(%{stars: 5})
 
   cs = %Review{} |> Review.changeset(%{stars: 5, book_id: 1})
+
+  (from Book, preload: :reviews, limit: 1) |> Repo.one
+
+  (from b in Book,
+    join: r in Review,
+    on: b.id == r.book_id,
+    group_by: b.title,
+    select: {count(r.id), b.title},
+    order_by: count(r.id)
+  ) |> Repo.all
+
+  (from b in Book,
+    join: r in Review,
+    on: b.id == r.book_id,
+    as: :review,
+    group_by: b.title,
+    select: {avg(as(:review).stars), b.title}
+  ) |> Repo.all
   """
 
   # SCHEMA
