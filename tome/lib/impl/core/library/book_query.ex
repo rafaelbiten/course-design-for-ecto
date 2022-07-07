@@ -1,7 +1,7 @@
 defmodule Tome.Library.BookQuery do
   import Ecto.Query, only: [from: 2]
-  alias Tome.Feedback.Review
   alias Tome.Library.Book
+  alias Tome.Feedback.Review
 
   @valid_statuses Book.list_valid_statuses()
 
@@ -67,29 +67,34 @@ defmodule Tome.Library.BookQuery do
     from(b in query, limit: ^page_size, offset: ^offset)
   end
 
-  def with_reviews(query) do
-    from(b in query,
+  def bind_reviews(books) do
+    from(b in books,
       join: r in Review,
       on: b.id == r.book_id,
       as: :reviews
     )
   end
 
-  def highly_rated(query, stars \\ 4) when stars in 1..5 do
-    from(b in query, where: as(:reviews).stars >= ^stars)
+  def highly_rated(books, stars \\ 4) when stars in 1..5 do
+    from(b in books, where: as(:reviews).stars >= ^stars)
   end
 
-  def poorly_rated(query, stars \\ 2) when stars in 1..5 do
-    from(b in query, where: as(:reviews).stars <= ^stars)
+  def poorly_rated(books, stars \\ 2) when stars in 1..5 do
+    from(b in books, where: as(:reviews).stars <= ^stars)
   end
 
-  def recently_rated(query, hours_ago \\ 1) do
-    hours_ago = DateTime.add(DateTime.utc_now(), -:timer.hours(hours_ago))
-    from(b in query, where: as(:reviews).inserted_at >= ^hours_ago)
+  def recently_rated(books, past_date \\ days_ago(14)) do
+    from(b in books, where: as(:reviews).inserted_at >= ^past_date)
   end
 
   # CONVERT
 
   def as_tuple_title(query),
     do: from(b in query, select: {b.id, b.title}, order_by: [asc: b.title])
+
+  # PRIVATE FNS
+
+  defp days_ago(num_of_days) when is_integer(num_of_days) do
+    DateTime.add(DateTime.utc_now(), -1 * num_of_days * 24 * 60 * 60)
+  end
 end
