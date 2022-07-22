@@ -92,6 +92,17 @@ defmodule Tome.Library.BookQuery do
   def as_tuple_title(query),
     do: from(b in query, select: {b.id, b.title}, order_by: [asc: b.title])
 
+  @doc """
+  Book |> BookQuery.bind_reviews |> BookQuery.as_ratings_by_book |> Repo.all
+  """
+  def as_ratings_by_book(books) do
+    from(b in books,
+      select: {b.title, count(as(:reviews).book_id)},
+      group_by: b.title,
+      order_by: [desc: count(as(:reviews).book_id)]
+    )
+  end
+
   # PRIVATE FNS
 
   defp days_ago(num_of_days) when is_integer(num_of_days) do
