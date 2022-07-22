@@ -12,4 +12,12 @@ defmodule Tome.Boundary.Reviews do
     |> Review.changeset(%{stars: stars, book_id: book_id})
     |> Repo.insert!()
   end
+
+  def delete(%Review{} = review) do
+    Repo.delete!(review)
+  end
+
+  def delete(review_id) do
+    Repo.delete!(%Review{id: review_id})
+  end
 end
