@@ -16,6 +16,7 @@ defmodule Tome.Library.Book do
     field(:description)
     field(:status, Ecto.Enum, values: ~w[working published beta retired]a, default: :working)
     field(:published_on, :date, default: nil)
+    field(:count, :integer, default: 0)
 
     timestamps()
     has_many(:reviews, Tome.Feedback.Review)
