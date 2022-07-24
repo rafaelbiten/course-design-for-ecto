@@ -1,6 +1,8 @@
 defmodule Tome.Boundary.Reviews do
-  alias Tome.Repo
   alias Tome.Feedback.Review
+  alias Tome.Repo
+
+  @moduledoc false
 
   def review(%Tome.Library.Book{} = book, stars) do
     review(book.id, stars)
