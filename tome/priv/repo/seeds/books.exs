@@ -9,8 +9,8 @@ alias Tome.Feedback.Review
 
 # Seed the Database
 
-Tome.Repo.delete_all(Review)
-Tome.Repo.delete_all(Book)
+Tome.Repo.truncate(Review)
+Tome.Repo.truncate(Book)
 
 now = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 
@@ -31,6 +31,7 @@ Repo.insert_all(
       description: description,
       status: status,
       published_on: published_on,
+      count: :random.uniform(3),
       inserted_at: now,
       updated_at: now
     }
@@ -54,6 +55,7 @@ Repo.insert_all(
       description: "Book description #{n}",
       status: status,
       published_on: published_on,
+      count: :random.uniform(3),
       inserted_at: now,
       updated_at: now
     }
