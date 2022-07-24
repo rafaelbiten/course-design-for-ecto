@@ -26,14 +26,14 @@ defmodule Tome.Library.Book do
 
   def create_changeset(params \\ %{}) do
     %__MODULE__{}
-    |> cast(params, ~w[title isbn description status published_on]a)
+    |> cast(params, ~w[title isbn description status published_on count]a)
     |> validate_required(~w[title isbn status]a)
     |> unique_constraint(:isbn)
   end
 
   def update_changeset(%__MODULE__{} = book, params \\ %{}) do
     book
-    |> cast(params, ~w[title description status published_on]a)
+    |> cast(params, ~w[title description status published_on count]a)
     |> validate_required(~w[title isbn status]a)
     |> validate_inclusion(:status, ~w[published beta retired]a)
     |> validate_published_on()
