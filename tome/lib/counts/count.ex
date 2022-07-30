@@ -50,6 +50,11 @@ defmodule Counts.Count do
     |> Repo.update!()
   end
 
+  def increment(name) do
+    from(c in Counts.Count, update: [inc: [value: 1]], where: c.name == ^name)
+    |> Repo.update_all([])
+  end
+
   @doc """
   Creates a new counter and runs the `naive_increment` fn a number of times in parallel
 
@@ -76,6 +81,27 @@ defmodule Counts.Count do
     result = get(counter.name)
 
     IO.puts("➡️ Successfully called naive_increment #{increments} times in parallel")
+    IO.puts("➡️ Final counter value is: #{result.value}. Expected: #{increments}")
+  end
+
+  @spec run_stream_of_increments(integer) :: :ok
+  def run_stream_of_increments(increments) when is_integer(increments) do
+    counter =
+      NaiveDateTime.utc_now()
+      |> NaiveDateTime.to_string()
+      |> create()
+
+    IO.puts("➡️ Created a new counter named #{counter.name} with value 0")
+    IO.puts("➡️ Run #{increments} increments in parallel")
+
+    :ok =
+      1..increments
+      |> Task.async_stream(fn _ -> Counts.Count.increment(counter.name) end)
+      |> Stream.run()
+
+    result = get(counter.name)
+
+    IO.puts("➡️ Successfully called increment #{increments} times in parallel")
     IO.puts("➡️ Final counter value is: #{result.value}. Expected: #{increments}")
   end
 end
