@@ -1,9 +1,10 @@
-<section class="phx-hero">
-  <h1>Welcome to Phoenix!</h1>
-  <p>Peace of mind from prototype to production</p>
-</section>
-
 <section class="row">
+  <article class="column">
+    <h2>Contexts</h2>
+    <ul>
+      <%= link "List Accounts", to: Routes.account_index_path(@conn, :index) %>
+    </ul>
+  </article>
   <article class="column">
     <h2>Resources</h2>
     <ul>
