@@ -3,6 +3,7 @@ defmodule Banq.Bank do
   The Bank context.
   """
 
+  alias Ecto.Multi
   import Ecto.Query, warn: false
   alias Banq.Repo
 
@@ -100,5 +101,19 @@ defmodule Banq.Bank do
   """
   def change_account(%Account{} = account, attrs \\ %{}) do
     Account.changeset(account, attrs)
+  end
+
+  @spec transfer(from_account_id: integer, to_account_id: integer, amount: integer) :: any
+  def transfer(from_account_id: from_account_id, to_account_id: to_account_id, amount: amount) do
+    # core related (safe)
+    from_account = from(Account, where: [id: ^from_account_id])
+    to_account = from(Account, where: [id: ^to_account_id])
+
+    Multi.new()
+    |> Multi.update_all(:withdraw, from_account, inc: [balance: -amount])
+    |> Multi.update_all(:deposit, to_account, inc: [balance: amount])
+
+    # boundary related (unsafe)
+    |> Repo.transaction()
   end
 end
