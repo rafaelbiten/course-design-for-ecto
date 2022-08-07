@@ -112,8 +112,22 @@ defmodule Banq.Bank do
     Multi.new()
     |> Multi.update_all(:withdraw, from_account, inc: [balance: -amount])
     |> Multi.update_all(:deposit, to_account, inc: [balance: amount])
+    |> Multi.run(:check_transaction, &check_transaction/2)
 
     # boundary related (unsafe)
     |> Repo.transaction()
+    |> case do
+      {:ok, %{check_transaction: nil} = result} ->
+        # Handle success case
+        {:ok, result}
+
+      {:error, action, _error, _changes_so_far} ->
+        # Handle failure case, ie.:
+        # {:error, :check_transaction, "Transfer failed", %{deposit: {0, nil}, withdraw: {1, nil}}}
+        {:error, "Failed #{action}"}
+    end
   end
+
+  defp check_transaction(_repo, %{withdraw: {1, nil}, deposit: {1, nil}}), do: {:ok, nil}
+  defp check_transaction(_repo, _changes_so_far), do: {:error, "Failed transaction check"}
 end
