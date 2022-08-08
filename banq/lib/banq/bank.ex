@@ -138,13 +138,31 @@ defmodule Banq.Bank do
       from_account = from(Account, where: [id: ^from_account_id], select: [:balance])
       to_account = from(Account, where: [id: ^to_account_id], select: [:balance])
 
-      with {1, [withdrawal_account]} <- repo.update_all(from_account, inc: [balance: -amount]),
-           {1, [deposit_account]} <- repo.update_all(to_account, inc: [balance: amount]) do
-        IO.inspect(withdrawal_account.balance, label: "New withdrawal account balance:")
-        IO.inspect(deposit_account.balance, label: "New deposit account balance:")
-        {:ok, nil}
-      else
-        _ -> {:error, "Failed to transfer"}
+      try do
+        with(
+          {1, [withdrawal_account]} <- repo.update_all(from_account, inc: [balance: -amount]),
+          {1, [deposit_account]} <- repo.update_all(to_account, inc: [balance: amount])
+        ) do
+          IO.inspect(withdrawal_account.balance, label: "New withdrawal account balance:")
+          IO.inspect(deposit_account.balance, label: "New deposit account balance:")
+          {:ok, nil}
+        else
+          _ -> {:error, "Failed to transfer"}
+        end
+      rescue
+        error in Postgrex.Error ->
+          constraint_violation =
+            error
+            |> Map.from_struct()
+            |> get_in([:postgres, :constraint])
+
+          case constraint_violation do
+            "balance_must_be_positive" ->
+              {:error, "Not enough funds to withdraw #{amount} from account #{from_account_id}"}
+
+            _ ->
+              {:error, "Unhandled error"}
+          end
       end
     end)
     |> Repo.transaction()
