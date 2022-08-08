@@ -130,4 +130,23 @@ defmodule Banq.Bank do
 
   defp check_transaction(_repo, %{withdraw: {1, nil}, deposit: {1, nil}}), do: {:ok, nil}
   defp check_transaction(_repo, _changes_so_far), do: {:error, "Failed transaction check"}
+
+  @spec transfer_run(from_account_id: integer, to_account_id: integer, amount: integer) :: any
+  def transfer_run(from_account_id: from_account_id, to_account_id: to_account_id, amount: amount) do
+    Multi.new()
+    |> Multi.run(:transaction, fn repo, _ ->
+      from_account = from(Account, where: [id: ^from_account_id], select: [:balance])
+      to_account = from(Account, where: [id: ^to_account_id], select: [:balance])
+
+      with {1, [withdrawal_account]} <- repo.update_all(from_account, inc: [balance: -amount]),
+           {1, [deposit_account]} <- repo.update_all(to_account, inc: [balance: amount]) do
+        IO.inspect(withdrawal_account.balance, label: "New withdrawal account balance:")
+        IO.inspect(deposit_account.balance, label: "New deposit account balance:")
+        {:ok, nil}
+      else
+        _ -> {:error, "Failed to transfer"}
+      end
+    end)
+    |> Repo.transaction()
+  end
 end
