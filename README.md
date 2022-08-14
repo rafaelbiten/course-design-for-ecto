@@ -14,8 +14,10 @@ I'm leaving this Repo available mostly for my own reference.
 
 ### Folder Structure
 
-| Folder                             | Contents                                                                         |
-| :--------------------------------- | :------------------------------------------------------------------------------- |
-| [banq](banq/lib/banq/bank.ex#L106) | An exercise on avoiding concurrency bugs with DB transactions avoid `Ecto.Multi` |
-| [count](tome/lib/counts/count.ex)  | Simple example on how concurrency bugs can occur when updating the database      |
-| [tome](tome)                       | The bulk of the contents of the course                                           |
+| Folder                                  | Contents                                                                         |
+| :-------------------------------------- | :------------------------------------------------------------------------------- |
+| [banq](banq/lib/banq/bank.ex#L106)      | An exercise on avoiding concurrency bugs with DB transactions avoid `Ecto.Multi` |
+| [count](tome/lib/counts/count.ex)       | Simple example on how concurrency bugs can occur when updating the database      |
+| [tome](tome)                            | The bulk of the contents of the course                                           |
+| [tome/core](tome/lib/impl/core)         | The core layer                                                                   |
+| [tome/boundary](tome/lib/impl/boundary) | The boundary layer                                                               |
